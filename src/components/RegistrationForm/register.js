@@ -9,8 +9,32 @@ class RegistrationForm extends React.Component{
     state = {
         name : '',
         username : '',
-        amount : ''
+		amount : '',
+		
       }
+
+	  formvalidate=()=>{
+		  
+		  let error=false;
+		  	if (this.state.username === "") {
+				error = true;
+			}
+
+			if (this.state.name === "") {
+				error = true;
+			}
+
+			if (
+				isNaN(parseInt(this.state.amount)) ||
+				parseInt(this.state.amount) <= 0
+			) {
+				error = true;
+			}
+
+			if(error)
+			return false;
+			else return true;
+	  }
 
 
       checkout =  async (token, id) => {
@@ -100,7 +124,9 @@ class RegistrationForm extends React.Component{
 
     submitDetails = (e) => {
 		e.preventDefault();
-            
+			
+			if(this.formvalidate()){
+				
 				axios.post("https://roiim-backend.herokuapp.com/create-customer", {
 					merchantRefNum: this.state.username,
 					name: this.state.name
@@ -119,6 +145,10 @@ class RegistrationForm extends React.Component{
 				.catch(() => {
 					alert("Please try again something went wrong");
 				});
+			}
+			else{
+				alert('Fill all the details and amount should be greater than zero')
+			}
 		} 
 	
 
@@ -132,7 +162,7 @@ render(){
                 <label htmlFor="username">UserName</label>
                 <input type="text" 
                        className="form-control" 
-                       id="username" 
+					   id="username" 
                        placeholder="Enter User Name"
                        value={this.state.username}
                        onChange={ e => this.setState({ username: e.target.value })}
@@ -144,7 +174,7 @@ render(){
                     <label htmlFor="Name">Name</label>
                     <input type="text" 
                         className="form-control" 
-                        id="name" 
+						id="name" 
                         placeholder="Enter Name"
                         value={this.state.name}
                         onChange={e => this.setState({ name: e.target.value })}
@@ -154,7 +184,7 @@ render(){
                     <label htmlFor="amount">Amount</label>
                     <input type="number" 
                         className="form-control" 
-                        id="amount" 
+						id="amount" 
                         placeholder="Enter Amount"
                         value={this.state.amount}
                         onChange={ e => this.setState({ amount: e.target.value })}
